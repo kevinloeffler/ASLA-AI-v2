@@ -1,7 +1,5 @@
 import cv2
 
-from src.preprocessing.marker_errors import MarkerError
-
 
 class Markers:
 	"""
@@ -79,3 +77,8 @@ class Markers:
 		bottom_right = max(right_markers, key=lambda marker: marker[2])[1:]
 
 		return top_left, top_right, bottom_right, bottom_left
+
+
+class MarkerError(Exception):
+	def __init__(self, msg):
+		super().__init__(msg)
