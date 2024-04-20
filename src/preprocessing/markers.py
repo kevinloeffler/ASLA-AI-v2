@@ -60,7 +60,7 @@ class Markers:
 
 		# visualize result:
 		# for match in selection:
-		# 	cv2.rectangle(image, (match[0], match[1]), (match[0] + template_width, match[1] + template_height), (0, 0, 255), 2)
+		#	cv2.rectangle(image, (match[0], match[1]), (match[0] + template_width, match[1] + template_height), (255, 0, 0), 2)
 		# cv2.imshow('preview', image)
 		# cv2.waitKey(0)
 
