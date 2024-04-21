@@ -1,7 +1,7 @@
 import math
 import numpy as np
 
-from src.preprocessing.markers import Markers, Marker
+from .markers import Markers, Marker
 
 
 def format_image(markers: Markers, image_shape: tuple[int, int]) -> tuple[tuple[int, int, int, int], float]:
