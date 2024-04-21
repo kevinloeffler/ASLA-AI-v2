@@ -54,10 +54,6 @@ class Markers:
 			new_matches = filter(lambda match: not self._is_close((max_element[0], max_element[1]), match[:2], template_width), matches)
 			matches = list(new_matches)
 
-		print('selection:', selection)
-
-		print('close:', self._is_close((663, 384), (662, 384), template_width))
-
 		# visualize result:
 		# for match in selection:
 		#	cv2.rectangle(image, (match[0], match[1]), (match[0] + template_width, match[1] + template_height), (255, 0, 0), 2)

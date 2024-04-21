@@ -4,29 +4,22 @@ import numpy as np
 from src.preprocessing.markers import Markers, Marker
 
 
-def format_image(markers: Markers, image_shape: tuple[int, int]):
+def format_image(markers: Markers, image_shape: tuple[int, int]) -> tuple[tuple[int, int, int, int], float]:
 	"""
 	:param markers: The markers corresponding to the image
 	:param image_shape: The shape of the image
-	:return:
+	:return: (crop value tuple (top, right, bottom, left) and clockwise rotation angle in radians)
 	"""
 	angle = _get_rotation(markers=markers)
-	print('angle:', angle)
 
 	rotated_markers = [rotate_marker(marker, -angle, image_shape) for marker in markers.all()]
-	print('rotated_markers:', rotated_markers)
 
 	crop_top = min(rotated_markers, key=lambda marker: marker[1])[1]
 	crop_bottom = image_shape[1] - max(rotated_markers, key=lambda marker: marker[1])[1]
 	crop_left = min(rotated_markers, key=lambda marker: marker[0])[0]
 	crop_right = image_shape[0] - max(rotated_markers, key=lambda marker: marker[0])[0]
 
-	print('crop_top:', crop_top)
-	print('crop_bottom:', crop_bottom)
-	print('crop_left:', crop_left)
-	print('crop_right:', crop_right)
-
-	return crop_top, crop_right, crop_bottom, crop_left
+	return (crop_top, crop_right, crop_bottom, crop_left), angle
 
 
 def _get_rotation(markers: Markers) -> float:

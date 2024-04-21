@@ -1,5 +1,7 @@
 # import torch
-import numpy as np
+import math
+
+# import numpy as np
 # import pandas as pd
 # from simpletransformers.ner import NERModel, NERArgs
 import cv2
@@ -8,29 +10,29 @@ from src.preprocessing.format import format_image, rotate_marker
 from src.preprocessing.markers import Markers, Marker
 
 
+# image
 test_image = cv2.imread('test_image.JPG')
 image_height, image_width = test_image.shape[:2]
 
-# rotation test:
-# res = rotate_marker(Marker(x=100, y=100, width=100, height=100), 0.178, (image_width, image_height))
-# print('res:', res)
-
-image_center = tuple(np.array(test_image.shape[1::-1]) / 2)
-rot_mat = cv2.getRotationMatrix2D(image_center, -1.64, 1.0)
-rotated_image = cv2.warpAffine(test_image, rot_mat, test_image.shape[1::-1], flags=cv2.INTER_LINEAR)
-
+# format
 markers = Markers(test_image)
-print('markers:', markers)
-t, r, b, l = format_image(markers=markers, image_shape=(image_width, image_height))
+crop, angle = format_image(markers=markers, image_shape=(image_width, image_height))
 
-for marker in markers.all():
-	rotated_marker = rotate_marker(marker, -0.178, (image_width, image_height))
-	cv2.rectangle(rotated_image, rotated_marker, (rotated_marker[0] + 10, rotated_marker[1] + 10), (0, 255, 0), 2)
+# create metadata
+metadata = create_json_metadata(
+	entities=[],
+	contrast=1.0,
+	brightness=1.0,
+	sharpness=1.0,
+	white_balance=[1.0, 1.0, 1.0],
+	crop_top=crop[0],
+	crop_right=crop[1],
+	crop_bottom=crop[2],
+	crop_left=crop[3],
+	rotation=math.degrees(angle),
+)
 
-# visualize result:
-cv2.rectangle(rotated_image, (l, t), (image_width - r, image_height - b), (0, 0, 255), 2)
-cv2.imshow('preview', rotated_image)
-cv2.waitKey(0)
+print(metadata)
 
 '''
 print('pytorch version:', torch.__version__)
