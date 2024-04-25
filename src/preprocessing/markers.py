@@ -1,3 +1,5 @@
+import datetime
+
 import cv2
 import numpy as np
 
@@ -42,17 +44,32 @@ class Markers:
 		matches = []
 		selection = []
 
-		for y, row in enumerate(match_results):
-			for x, score in enumerate(row):
-				if score > threshold:
-					matches.append((x, y, score))
+		kernel_size = int(template_width * 8) + 1
 
-		for i in range(4):
-			max_index = np.argmax([match[2] for match in matches])
-			selection.append(matches[max_index][:2])
-			max_element = matches.pop(max_index)
-			new_matches = filter(lambda match: not self._is_close((max_element[0], max_element[1]), match[:2], template_width), matches)
-			matches = list(new_matches)
+		image_width = match_results.shape[1]
+		image_height = match_results.shape[0]
+		print('width', image_width, 'height', image_height)
+
+		for y in range(0, image_height - kernel_size, kernel_size):
+			for x in range(0, image_width - kernel_size, kernel_size):
+				kernel = match_results[y: y+kernel_size, x: x+kernel_size]
+				local_max = kernel.max()
+				position = np.unravel_index(kernel.argmax(), kernel.shape)
+				if local_max > threshold:
+					matches.append((x + position[1], y + position[0], local_max))
+
+		matches.sort(key=lambda m: m[2], reverse=True)
+		print(matches)
+
+		for match in matches:
+			skip = False
+			for selected in selection:
+				if self._is_close(match[:2], selected[:2], template_width):
+					skip = True
+			if not skip:
+				selection.append(match)
+
+		selection = selection[:4]
 
 		# visualize result:
 		# for match in selection:
