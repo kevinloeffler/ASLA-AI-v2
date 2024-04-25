@@ -1,5 +1,3 @@
-import datetime
-
 import cv2
 import numpy as np
 
@@ -44,14 +42,13 @@ class Markers:
 		matches = []
 		selection = []
 
-		kernel_size = int(template_width * 8) + 1
+		kernel_size = int(template_width * 4) + 1
 
 		image_width = match_results.shape[1]
 		image_height = match_results.shape[0]
-		print('width', image_width, 'height', image_height)
 
-		for y in range(0, image_height - kernel_size, kernel_size):
-			for x in range(0, image_width - kernel_size, kernel_size):
+		for y in range(0, image_height, kernel_size):
+			for x in range(0, image_width, kernel_size):
 				kernel = match_results[y: y+kernel_size, x: x+kernel_size]
 				local_max = kernel.max()
 				position = np.unravel_index(kernel.argmax(), kernel.shape)
@@ -59,7 +56,6 @@ class Markers:
 					matches.append((x + position[1], y + position[0], local_max))
 
 		matches.sort(key=lambda m: m[2], reverse=True)
-		print(matches)
 
 		for match in matches:
 			skip = False
