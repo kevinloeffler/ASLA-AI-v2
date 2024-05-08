@@ -1,7 +1,5 @@
-import json
 
-
-def create_json_metadata(
+def create_metadata(
 		entities: list,
 		contrast: float = 1.0,
 		brightness: float = 1.0,
@@ -12,13 +10,13 @@ def create_json_metadata(
 		crop_bottom: int = 0,
 		crop_left: int = 0,
 		rotation: float = 1.0,
-) -> json:
+) -> dict:
 	metadata = {
 		'entities': entities,
 		'grading': {
 			'contrast': contrast,
-			'brightness:': brightness,
-			'sharpness:': sharpness,
+			'brightness': brightness,
+			'sharpness': sharpness,
 			'whiteBalance': white_balance or [1.0, 1.0, 1.0],
 			'manuallyChanged': False,
 		},
@@ -33,4 +31,4 @@ def create_json_metadata(
 			'manuallyChanged': False,
 		}
 	}
-	return json.dumps(metadata)
+	return metadata

@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install libgl1 -y
 RUN pip3 install torch --index-url https://download.pytorch.org/whl/cpu
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY /models ./models
 
@@ -17,4 +17,4 @@ COPY /src ./src
 
 WORKDIR /app/src
 
-CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

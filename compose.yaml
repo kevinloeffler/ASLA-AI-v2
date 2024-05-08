@@ -1,3 +1,5 @@
 services:
   ai:
     build: .
+    ports:
+      - "1415:80"
