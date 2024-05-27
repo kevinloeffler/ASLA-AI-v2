@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 import cv2
 import numpy
 from transformers import LayoutLMv3ImageProcessor
-from .clustering import Clustering
+from dataclasses import dataclass
 
-### Type
-BoundingBox = tuple[int, int, int, int]
+from .clustering import Clustering
+from ...util.types import BoundingBox
 
 
 class LayoutModel:
@@ -28,7 +27,7 @@ class LayoutModel:
 		ordered_boxes = self.__order_boxes(bounding_boxes)
 
 		# Draw boxes (for visual debugging)
-		self.__draw_boxes(image, ordered_boxes)
+		# self.__draw_boxes(image, ordered_boxes)
 
 		return ordered_boxes
 
@@ -151,7 +150,7 @@ class LayoutModel:
 		"""draw predictions over the image"""
 		colors = [(244, 159, 10), (239, 62, 54), (20, 138, 206), (12, 124, 89), (214, 73, 51), (11, 157, 82)]
 
-		print('boxes:', grouped_boxes)
+		# print('boxes:', grouped_boxes)
 		for index, group in enumerate(grouped_boxes):
 			group_color = colors[index % len(colors)]
 			for box in group:

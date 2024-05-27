@@ -1,7 +1,7 @@
 import numpy as np
 from fastapi import FastAPI, UploadFile, File, Form
 
-from pipeline import handle_image, demo
+from pipeline import handle_image
 
 app = FastAPI()
 

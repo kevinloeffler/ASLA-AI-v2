@@ -1,3 +1,5 @@
+import json
+
 
 def create_metadata(
 		entities: list,
@@ -32,3 +34,15 @@ def create_metadata(
 		}
 	}
 	return metadata
+
+
+def read_metadata(path: str) -> dict:
+	# TODO: error handling
+	with open(path, "r") as file:
+		data = json.load(file)
+
+		if 'entities' not in data:
+			raise ValueError("No entities found in metadata")
+
+		return data
+

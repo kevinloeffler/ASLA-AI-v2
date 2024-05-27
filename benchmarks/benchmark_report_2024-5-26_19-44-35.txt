@@ -1,0 +1,18 @@
+
+	BENCHMARK REPORT
+	
+	---------------- Config
+	layout model: microsoft/layoutlmv3-large
+	ocr model:    
+	ner model:    
+	test images:  11
+	
+	---------------- Results
+	layout model: 0.26666666666666666
+	ocr model:    ?
+	ner model:    ?
+	pipeline:     ?
+	
+	---------------- Comments
+	
+	
