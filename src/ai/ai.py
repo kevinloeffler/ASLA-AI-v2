@@ -6,6 +6,8 @@ from transformers import LayoutLMv3Processor
 
 from src.ai.layout.layout_model import LayoutModel
 from src.ai.layout.layout_model_test import layout_benchmark
+from src.ai.ocr.ocr_model import OcrModel
+from src.ai.ocr.ocr_model_test import ocr_benchmark
 from src.preprocessing.metadata import read_metadata
 
 
@@ -75,8 +77,8 @@ def extract_entities(image) -> list:
 
 def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str,
 				directory: str, output_dir: str, comments: any = ''):
-	layout_model = LayoutModel('microsoft/layoutlmv3-large')
-	# ocr_model =
+	layout_model = LayoutModel(layout_model_name)
+	ocr_model = OcrModel(ocr_model_name)
 	# ner_model =
 
 	layout_results = []
@@ -96,13 +98,24 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 
 				# do preprocessing...
 
+				# layout model:
 				layout_results.append(layout_benchmark(layout_model, image, metadata['entities']))
+
+				# ocr model:
+				temp_ocr_scores = []
+				for entity in metadata['entities']:
+					cropped_image = image[
+									entity['boundingBox']['top']: entity['boundingBox']['bottom'],
+									entity['boundingBox']['left']: entity['boundingBox']['right']]
+					temp_ocr_scores.append(ocr_benchmark(ocr_model, cropped_image, entity['text']))
+				ocr_results.append(sum(temp_ocr_scores) / len(temp_ocr_scores))
 
 			except Exception as e:
 				print(e)  # TODO: error handling
 
 
 	layout_performance = sum(layout_results) / len(layout_results)
+	ocr_performance = sum(ocr_results) / len(ocr_results)
 
 	output_string = f"""
 	BENCHMARK REPORT
@@ -115,7 +128,7 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 	
 	---------------- Results
 	layout model: {round(layout_performance, 3)}
-	ocr model:    ?
+	ocr model:    {round(ocr_performance, 3)}
 	ner model:    ?
 	pipeline:     ?
 	
