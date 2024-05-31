@@ -23,10 +23,10 @@ class Clustering:
         coordinates = np.array([self.get_box_center(box) for box in bounding_boxes])
 
         if len(coordinates) <= 5:
-            min_k_value = 2
+            min_k_value = 1
             max_k_value = 3
         else:
-            min_k_value = 3
+            min_k_value = 2
             max_k_value = min(len(coordinates), 12)  # don't allow more than 12 text groups
 
         k_values = range(min_k_value, max_k_value)
