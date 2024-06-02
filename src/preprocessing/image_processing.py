@@ -1,8 +1,19 @@
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
+
+from .stamp_removal import remove_stamp
 
 
-def preprocess_image(image):
+def preprocess_image(image: np.ndarray) -> np.ndarray:
+	stampless_image = remove_stamp(image)
+
+	# TODO: more
+
+	return stampless_image
+
+
+def preprocess_image_1(image):
 	plotter = Plotter()
 
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -34,8 +45,7 @@ def preprocess_image(image):
 	# cv2.imwrite('./preprocessing/output_7.jpg', blurred)
 
 
-#'''
-def preprocess_image(image):
+def preprocess_image_2(image):
 	plotter = Plotter()
 
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -67,7 +77,7 @@ def preprocess_image(image):
 	# cv2.imwrite('./output.jpg', final)
 
 	plotter.show()
-#'''
+
 
 class Plotter:
 	def __init__(self):

@@ -2,16 +2,17 @@ import math
 import cv2
 import numpy as np
 
-from preprocessing.format import format_image
-from preprocessing.markers import Markers
-from preprocessing.metadata import create_metadata
 from src.ai.ai import ModelWrapper
+from src.preprocessing.format import format_image
+from src.preprocessing.markers import Markers
+from src.preprocessing.metadata import create_metadata
+from src.preprocessing.image_processing import preprocess_image
 
 
 def handle_image(raw_image: np.ndarray, ai: ModelWrapper) -> dict:
 	# image
 	image = cv2.imdecode(raw_image, cv2.IMREAD_COLOR)
-	image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # faster, use if color is not important
+	image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # faster than color, use where possible
 	image_height, image_width = image.shape[:2]
 
 	# format
@@ -19,10 +20,11 @@ def handle_image(raw_image: np.ndarray, ai: ModelWrapper) -> dict:
 	crop, angle = format_image(markers=markers, image_shape=(image_width, image_height))
 
 	# preprocess
-	processed_image = image  # TODO
+	processed_image = preprocess_image(image_gray)
+	processed_color = cv2.cvtColor(processed_image, cv2.COLOR_GRAY2BGR)  # Models expect a color image...
 
 	# entity extraction
-	entities = ai.run_pipeline(processed_image)
+	entities = ai.run_pipeline(processed_color)
 
 	# create metadata
 	metadata = create_metadata(
