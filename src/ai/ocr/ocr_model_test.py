@@ -8,7 +8,7 @@ from src.preprocessing.metadata import read_metadata
 
 
 def ocr_benchmark(ocr_model: OcrModel, image: ndarray, target: str) -> float:
-	prediction = ocr_model.predict(image) or ''
+	prediction, confidence = ocr_model.predict(image) or ('', 0)
 	target = OcrModel.post_process_prediction(target)
 	similarity = SequenceMatcher(None, prediction, target).ratio() ** 2
 	print(f'ocr score: {round(similarity, 3)} | "{prediction}" vs "{target}"')

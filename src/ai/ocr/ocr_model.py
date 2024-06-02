@@ -16,20 +16,30 @@ class OcrModel:
 		self.model.config.length_penalty = 2.0
 		self.model.config.num_beams = 4
 
-	def predict(self, image: ndarray, confidence=-0.2) -> str or None:
+	def predict(self, image: ndarray, confidence=-0.2, strict_filter=True) -> tuple[str, float] or tuple[None, float]:
 		pixel_values = self.processor(image, return_tensors='pt').pixel_values.to(self.device)
 		result = self.model.generate(pixel_values, output_scores=True, return_dict_in_generate=True)
 		generated_ids = result['sequences']
 		score = result['sequences_scores'].numpy()[0]
 
-		if score > confidence:
-			prediction = self.processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-			return self.post_process_prediction(prediction)
+		if score < confidence:
+			return None, 0
+
+		prediction = self.processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+		processed_prediction = self.post_process_prediction(prediction)
+
+		if strict_filter:
+			if len(processed_prediction) <= 1:
+				# Can add additional filters here
+				return None, 0
+
+		return processed_prediction, score
 
 	@staticmethod
 	def post_process_prediction(string: str) -> str:
-		forbidden_end_chars = ['.']
+		forbidden_end_chars = ['.', ',']
 		new_string = string.lower()
 		new_string = new_string[: -1] if new_string[-1] in forbidden_end_chars else new_string
 		new_string = new_string.replace(' ', '')
+		new_string = new_string.replace(';', ':')
 		return new_string

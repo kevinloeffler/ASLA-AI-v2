@@ -5,10 +5,10 @@ import numpy as np
 from preprocessing.format import format_image
 from preprocessing.markers import Markers
 from preprocessing.metadata import create_metadata
-from ai.ai import extract_entities
+from src.ai.ai import ModelWrapper
 
 
-def handle_image(raw_image: np.ndarray):
+def handle_image(raw_image: np.ndarray, ai: ModelWrapper) -> dict:
 	# image
 	image = cv2.imdecode(raw_image, cv2.IMREAD_COLOR)
 	image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # faster, use if color is not important
@@ -18,8 +18,11 @@ def handle_image(raw_image: np.ndarray):
 	markers = Markers(image_gray)
 	crop, angle = format_image(markers=markers, image_shape=(image_width, image_height))
 
+	# preprocess
+	processed_image = image  # TODO
+
 	# entity extraction
-	entities = extract_entities(image)
+	entities = ai.run_pipeline(processed_image)
 
 	# create metadata
 	metadata = create_metadata(
