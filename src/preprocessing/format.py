@@ -4,20 +4,20 @@ import numpy as np
 from .markers import Markers, Marker
 
 
-def format_image(markers: Markers, image_shape: tuple[int, int]) -> tuple[tuple[int, int, int, int], float]:
+def format_image(markers: Markers, image_shape: tuple[int, int], margin=25) -> tuple[tuple[int, int, int, int], float]:
 	"""
 	:param markers: The markers corresponding to the image
 	:param image_shape: The shape of the image
+	:param margin: Pixels to increase the crop of the image
 	:return: (crop value tuple (top, right, bottom, left) and clockwise rotation angle in radians)
 	"""
 	angle = _get_rotation(markers=markers)
-
 	rotated_markers = [rotate_marker(marker, -angle, image_shape) for marker in markers.all()]
 
-	crop_top = min(rotated_markers, key=lambda marker: marker[1])[1]
-	crop_bottom = image_shape[1] - max(rotated_markers, key=lambda marker: marker[1])[1]
-	crop_left = min(rotated_markers, key=lambda marker: marker[0])[0]
-	crop_right = image_shape[0] - max(rotated_markers, key=lambda marker: marker[0])[0]
+	crop_top = min(rotated_markers, key=lambda marker: marker[1])[1] + margin
+	crop_bottom = image_shape[1] - max(rotated_markers, key=lambda marker: marker[1])[1] + margin
+	crop_left = min(rotated_markers, key=lambda marker: marker[0])[0] + margin
+	crop_right = image_shape[0] - max(rotated_markers, key=lambda marker: marker[0])[0] + margin
 
 	return (crop_top, crop_right, crop_bottom, crop_left), angle
 
