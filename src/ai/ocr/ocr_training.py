@@ -97,8 +97,8 @@ def train_ocr(base_model: str, data_directory: str, output_directory: str):
 	training_args = Seq2SeqTrainingArguments(
 		predict_with_generate=True,
 		evaluation_strategy="steps",
-		per_device_train_batch_size=16,
-		per_device_eval_batch_size=16,
+		per_device_train_batch_size=8,
+		per_device_eval_batch_size=8,
 		fp16=True,
 		output_dir=output_directory,
 		logging_steps=10,
@@ -106,7 +106,7 @@ def train_ocr(base_model: str, data_directory: str, output_directory: str):
 		eval_steps=200,
 		save_total_limit=2,
 		dataloader_num_workers=4,
-		gradient_accumulation_steps=2,
+		gradient_accumulation_steps=4,
 	)
 
 	cer_metric = load_metric("cer")
