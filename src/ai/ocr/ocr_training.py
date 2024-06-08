@@ -5,14 +5,14 @@ import cv2
 from datasets import load_metric, Metric
 
 from .ocr_model import OcrModel
-from ...preprocessing.metadata import read_metadata
+from preprocessing.metadata import read_metadata
 
 import torch
 from torch.utils.data import Dataset
 from transformers import Seq2SeqTrainer, TrOCRProcessor, Seq2SeqTrainingArguments, default_data_collator
 
-from ...util.types import BoundingBox
-
+# from ...util.types import BoundingBox
+BoundingBox = any
 
 def _load_entities(from_directory: str, split=0.2) -> tuple[list[tuple[str, str, BoundingBox]], list[tuple[str, str, BoundingBox]]]:
 	data: list[tuple[str, str, BoundingBox]] = []
@@ -97,7 +97,7 @@ def train_ocr(base_model: str, data_directory: str):
 		per_device_train_batch_size=8,
 		per_device_eval_batch_size=8,
 		# fp16=True,
-		output_dir="../models/ocr/v1",
+		output_dir="/mnt/data/kevin.loeffler/asla_ai_v2/models/ocr/v1",
 		logging_steps=2,
 		save_steps=1000,
 		eval_steps=200,
