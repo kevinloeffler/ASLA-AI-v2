@@ -118,5 +118,5 @@ def train_ocr(base_model: str, data_directory: str, output_directory: str):
 	)
 	trainer.train()
 
-	trainer.save_model("../models/ocr/v1")
-	processor.save_pretrained("../models/ocr/v1")
+	trainer.save_model(output_directory)
+	processor.save_pretrained(output_directory)
