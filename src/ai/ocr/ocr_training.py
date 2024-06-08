@@ -73,7 +73,7 @@ def _compute_metrics(prediction, metric: Metric, processor: TrOCRProcessor):
 	return {"cer": cer}
 
 
-def train_ocr(base_model: str, data_directory: str):
+def train_ocr(base_model: str, data_directory: str, output_directory: str):
 	processor = TrOCRProcessor.from_pretrained(base_model)
 
 	train_data, test_data = _load_entities(from_directory=data_directory)
@@ -94,13 +94,16 @@ def train_ocr(base_model: str, data_directory: str):
 	training_args = Seq2SeqTrainingArguments(
 		predict_with_generate=True,
 		evaluation_strategy="steps",
-		per_device_train_batch_size=8,
-		per_device_eval_batch_size=8,
-		# fp16=True,
-		output_dir="../models/ocr/v1",
-		logging_steps=2,
+		per_device_train_batch_size=32,
+		per_device_eval_batch_size=32,
+		fp16=True,
+		output_dir=output_directory,
+		logging_steps=10,
 		save_steps=1000,
 		eval_steps=200,
+		save_total_limit=2,
+		dataloader_num_workers=4,
+		gradient_accumulation_steps=2,
 	)
 
 	cer_metric = load_metric("cer")
@@ -114,3 +117,6 @@ def train_ocr(base_model: str, data_directory: str):
 		data_collator=default_data_collator,
 	)
 	trainer.train()
+
+	trainer.save_model("../models/ocr/v1")
+	processor.save_pretrained("../models/ocr/v1")
