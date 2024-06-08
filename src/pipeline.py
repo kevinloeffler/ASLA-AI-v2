@@ -2,11 +2,11 @@ import math
 import cv2
 import numpy as np
 
-from src.ai.ai import ModelWrapper
-from src.preprocessing.format import format_image
-from src.preprocessing.markers import Markers
-from src.preprocessing.metadata import create_metadata
-from src.preprocessing.image_processing import preprocess_image
+from .ai.ai import ModelWrapper
+from .preprocessing.format import format_image
+from .preprocessing.markers import Markers
+from .preprocessing.metadata import create_metadata
+from .preprocessing.image_processing import preprocess_image
 
 
 def handle_image(raw_image: np.ndarray, ai: ModelWrapper) -> dict:

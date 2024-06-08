@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import threading
 
@@ -96,60 +97,8 @@ def extract_entities(image: np.ndarray, layout_model: LayoutModel, ocr_model: Oc
 	return postprocess(ocr_clusters)
 
 
-'''
-def extract_entities(image) -> list:
-
-	return [
-		{
-			'label': 'loc',
-			'text': 'WETTINGEN',
-			'boundingBox': {
-				'top': 399,
-				'right': 3031,
-				'bottom': 485,
-				'left': 2532
-			},
-			'manuallyChanged': False
-		},
-		{
-			'label': 'mst',
-			'text': 'M. 1:100',
-			'boundingBox': {
-				'top': 407,
-				'right': 3744,
-				'bottom': 492,
-				'left': 3395
-			},
-			'manuallyChanged': False
-		},
-		{
-			'label': 'date',
-			'text': '16.2.40',
-			'boundingBox': {
-				'top': 3545,
-				'right': 2560,
-				'bottom': 3616,
-				'left': 2268
-			},
-			'manuallyChanged': False
-		},
-		{
-			'label': 'date',
-			'text': '1419',
-			'boundingBox': {
-				'top': 3609,
-				'right': 2525,
-				'bottom': 3680,
-				'left': 2361
-			},
-			'manuallyChanged': False
-		},
-	]
-'''
-
-
 def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str, ner_model_type: str,
-				directory: str, output_dir: str, comments: any = ''):
+				directory: str, output_dir: str, comments: any = '', safe=True):
 	layout_model = LayoutModel(layout_model_name)
 	ocr_model = OcrModel(ocr_model_name)
 	ner_model = NerModel(ner_model_type, ner_model_name)
@@ -194,29 +143,51 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 	ocr_performance = sum(ocr_results) / len(ocr_results)
 	ner_performance = sum(ner_results) / len(ner_results)
 
-	output_string = f"""
-	BENCHMARK REPORT
-	
-	---------------- Config
-	layout model: {layout_model_name}
-	ocr model:    {ocr_model_name}
-	ner model:    {ner_model_name}
-	test images:  {test_image_count}
-	
-	---------------- Results
-	layout model: {round(layout_performance, 3)}
-	ocr model:    {round(ocr_performance, 3)}
-	ner model:    {round(ner_performance, 3)}
-	pipeline:     ?
-	
-	---------------- Comments
-	{comments}
-	"""
+	if safe:
+		output_string = f"""
+		BENCHMARK REPORT
+		
+		---------------- Config
+		layout model: {layout_model_name}
+		ocr model:    {ocr_model_name}
+		ner model:    {ner_model_name}
+		test images:  {test_image_count}
+		
+		---------------- Results
+		layout model: {round(layout_performance, 3)}
+		ocr model:    {round(ocr_performance, 3)}
+		ner model:    {round(ner_performance, 3)}
+		pipeline:     ?
+		
+		---------------- Comments
+		{comments}
+		"""
 
-	now = datetime.datetime.now()
-	filename = f"benchmark_report_{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}.txt"
-	with open(os.path.join(output_dir, filename), 'w') as file:
-		file.write(output_string)
+		output_json = {
+			'config': {
+				'layout_model': layout_model_name,
+				'ocr_model': ocr_model_name,
+				'ner_model': ner_model_name,
+				'test_image_count': test_image_count,
+			},
+			'results': {
+				'layout_model': layout_performance,
+				'ocr_model': ocr_performance,
+				'ner_model': ner_performance,
+				'pipeline': 0,
+			},
+			'comments': comments
+		}
+
+		now = datetime.datetime.now()
+		filename = f"benchmark_report_{now.year}-{now.month}-{now.day}_{now.hour}-{now.minute}-{now.second}"
+
+		with open(os.path.join(output_dir, f'{filename}.txt'), 'w') as file:
+			file.write(output_string)
+
+		with open(os.path.join(output_dir, f'{filename}.json'), 'w') as file:
+			file.write(json.dumps(output_json))
+	# END: safe
 
 	return {
 		"layout_model": layout_performance,

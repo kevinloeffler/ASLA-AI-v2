@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "retraining_count": 5,
+    "retraining_iterations": 10
+  },
+  "models": {
+    "layout": {
+      "name": "microsoft/layoutlmv3-large",
+      "score": 0.267
+    },
+    "ocr": {
+      "name": "microsoft/trocr-large-handwritten",
+      "score": 0.77
+    },
+    "ner": {
+      "name": "../models/ner/ner",
+      "score": 0.325
+    }
+  }
+}
