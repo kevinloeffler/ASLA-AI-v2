@@ -28,6 +28,9 @@ def _load_entities(from_directory: str, split=0.2) -> tuple[list[tuple[str, str,
 			continue
 
 		for entity in metadata['entities']:
+			if entity['label'] == 'DATE':
+				# Skip dates because they are often formatted differently then written
+				continue
 			data.append((os.path.join(from_directory, image_name), entity['text'], entity['boundingBox']))
 
 	random.shuffle(data)
