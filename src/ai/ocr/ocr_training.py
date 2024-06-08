@@ -91,8 +91,8 @@ def train_ocr(base_model: str, data_directory: str, output_directory: str):
 	model.config.max_length = 64
 	model.config.early_stopping = True
 	model.config.no_repeat_ngram_size = 3
-	model.config.length_penalty = 2.0
-	model.config.num_beams = 4
+	model.config.length_penalty = 3
+	model.config.num_beams = 8
 
 	training_args = Seq2SeqTrainingArguments(
 		predict_with_generate=True,
