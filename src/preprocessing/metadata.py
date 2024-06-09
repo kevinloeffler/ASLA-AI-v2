@@ -38,8 +38,6 @@ def create_metadata(
 
 def read_metadata(path: str, expect_entities=True) -> dict:
 	# TODO: error handling
-	if not path.endswith('.json'):
-		raise ValueError(f"Can't open non json file '{path}' as metadata")
 	with open(path, "r") as file:
 		data = json.load(file)
 
