@@ -14,7 +14,7 @@ from transformers import Seq2SeqTrainer, TrOCRProcessor, Seq2SeqTrainingArgument
 # from ...util.types import BoundingBox
 BoundingBox = any
 
-def _load_entities(from_directory: str, split=0.2) -> tuple[list[tuple[str, str, BoundingBox]], list[tuple[str, str, BoundingBox]]]:
+def _load_entities(from_directory: str, split=0.1) -> tuple[list[tuple[str, str, BoundingBox]], list[tuple[str, str, BoundingBox]]]:
 	data: list[tuple[str, str, BoundingBox]] = []
 	for file in os.listdir(from_directory):
 		if not file.endswith(".json"):
@@ -82,6 +82,8 @@ def train_ocr(base_model: str, data_directory: str, output_directory: str):
 	train_data, test_data = _load_entities(from_directory=data_directory)
 	train = OcrTrainingDataset(dataset=train_data, processor=processor)
 	test = OcrTrainingDataset(dataset=test_data, processor=processor)
+
+	print('training samples:', len(train), 'test samples:', len(test))
 
 	model = OcrModel(base_model).model
 	model.config.decoder_start_token_id = processor.tokenizer.cls_token_id
