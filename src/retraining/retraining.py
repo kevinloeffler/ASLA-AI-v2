@@ -7,14 +7,14 @@ from ..util.config import load_config, update_model_config
 def run_retraining():
 	config = load_config()
 
-	training_data = select_training_data('../data/retraining', count=config.get('settings', {}).get('retraining_count', 10))
+	training_data = select_training_data('../data/retraining/', count=config.get('settings', {}).get('retraining_count', 10))
 
 	# Run retraining for each model: extract training data & retrain
 	# TODO: retrain_layout_model()
 	# TODO: retrain_ocr_model()
 
 	retrained_ner_model = train_ner_model(
-		data_dir='../data/test_images/',
+		data_dir='../data/retraining/',
 		data=training_data,
 		model_name=config['models']['ner']['name'],
 		model_type='bert',

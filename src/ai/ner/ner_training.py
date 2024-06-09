@@ -58,6 +58,8 @@ def _load_data(data_dir: str, data: list[tuple[str, str]]) -> pd.DataFrame:
         for e_index, entity in enumerate(entities):
             sentence_id = m_index + e_index
             sentence = _augment_ner_entity(entity)
+            if sentence is None:
+                continue
             for word in sentence.split(' '):
                 sentence_ids.append(sentence_id)
                 words.append(word)
