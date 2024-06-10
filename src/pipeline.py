@@ -21,10 +21,10 @@ def handle_image(raw_image: np.ndarray, ai: ModelWrapper) -> dict:
 
 	# preprocess
 	processed_image = preprocess_image(image_gray)
-	processed_color = cv2.cvtColor(processed_image, cv2.COLOR_GRAY2BGR)  # Models expect a color image...
+	# processed_color = cv2.cvtColor(processed_image, cv2.COLOR_GRAY2BGR)  # Models expect a color image...
 
 	# entity extraction
-	entities = ai.run_pipeline(processed_color)
+	entities = ai.run_pipeline(processed_image)
 
 	# create metadata
 	metadata = create_metadata(

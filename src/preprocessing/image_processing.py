@@ -7,10 +7,7 @@ from .stamp_removal import remove_stamp
 
 def preprocess_image(image: np.ndarray) -> np.ndarray:
 	stampless_image = remove_stamp(image)
-
-	# TODO: more
-
-	return stampless_image
+	return preprocess_image_3(stampless_image)
 
 
 def preprocess_image_1(image):
@@ -77,6 +74,42 @@ def preprocess_image_2(image):
 	# cv2.imwrite('./output.jpg', final)
 
 	plotter.show()
+
+
+def preprocess_image_3(image):
+	factor = 0.1
+
+	# Convert to grayscale
+	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+	# Remove noise with a smaller kernel size
+	blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+	# Apply adaptive thresholding with adjusted parameters
+	thresh = cv2.adaptiveThreshold(
+		blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 51, 4
+	)
+
+	# Morphological close
+	kernel_close = np.ones((3, 3), np.uint8)
+	morph_close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel_close, iterations=1)
+
+	kernel_open = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+	morph_open = cv2.morphologyEx(morph_close, cv2.MORPH_OPEN, kernel_open, iterations=1)
+
+	morph_open = cv2.bitwise_not(morph_open)
+	mask_3_channel = cv2.cvtColor(morph_open, cv2.COLOR_GRAY2BGR)  # cv2.cvtColor(morph_open, cv2.COLOR_GRAY2BGR)
+	mask = mask_3_channel / 255.0
+
+	adjustment = 255 * factor
+	enhanced = np.where(
+		mask == 1,
+		np.clip(image + adjustment, 0, 255),
+		np.clip(image - adjustment, 0, 255)
+	).astype(np.uint8)
+
+	# inverted = cv2.bitwise_not(result)
+	return enhanced
 
 
 class Plotter:

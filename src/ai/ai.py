@@ -13,6 +13,7 @@ from src.ai.ner.ner_model_test import ner_benchmark
 from src.ai.ocr.ocr_model import OcrModel
 from src.ai.ocr.ocr_model_test import ocr_benchmark
 from src.postprocessing.ai_postprocessing import postprocess
+from src.preprocessing.image_processing import preprocess_image
 from src.preprocessing.metadata import read_metadata
 from src.util.types import PredictedEntity
 from src.util.util import find_best_label
@@ -118,7 +119,9 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 
 				test_image_count += 1
 
-				# do preprocessing...
+				# preprocessing
+				image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+				image = preprocess_image(image)
 
 				# layout model:
 				layout_results.append(layout_benchmark(layout_model, image, metadata['entities']))
