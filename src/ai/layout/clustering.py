@@ -39,7 +39,7 @@ class Clustering:
 
         optimal_k = k_values[silhouette_scores.index(max(silhouette_scores))]
 
-        kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init='auto')  # TODO: test different n_init values
+        kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init='auto')
         kmeans.fit(coordinates)
 
         labels, centers = kmeans.labels_, kmeans.cluster_centers_

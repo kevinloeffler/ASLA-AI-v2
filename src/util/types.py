@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-BoundingBox = tuple[int, int, int, int]
+BoundingBox = tuple[int, int, int, int]  # left, top, right, bottom
 
 
 class PredictedEntity(TypedDict):

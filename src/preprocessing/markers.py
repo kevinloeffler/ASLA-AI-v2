@@ -35,7 +35,7 @@ class Markers:
 		return [self.top_left, self.top_right, self.bottom_right, self.bottom_left]
 
 	def _find_markers(self, image: np.ndarray, threshold: float) -> list[Marker]:
-		template = cv2.imread('preprocessing/asla-marker.jpg', cv2.IMREAD_GRAYSCALE)
+		template = cv2.imread('src/preprocessing/asla-marker.jpg', cv2.IMREAD_GRAYSCALE)
 		template_height, template_width = template.shape
 
 		match_results = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)

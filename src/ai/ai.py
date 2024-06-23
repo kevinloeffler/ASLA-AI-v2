@@ -34,6 +34,8 @@ class ModelWrapper:
 		self.ner_model_name = ner_model_name
 		self.ner_model_type = ner_model_type
 
+		self.load_models()
+
 	def load_models(self):
 		print('Loading models')
 		self.layout_model = LayoutModel(self.layout_model_name)
@@ -95,7 +97,7 @@ def extract_entities(image: np.ndarray, layout_model: LayoutModel, ocr_model: Oc
 		for prediction in cluster:
 			prediction['label'] = find_best_label(prediction['text'], local_entities)
 
-	return postprocess(ocr_clusters)
+	return ocr_clusters
 
 
 def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str, ner_model_type: str,
@@ -140,7 +142,7 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 					ner_results.append(ner_benchmark(ner_model, sentence, metadata['entities']))
 
 			except Exception as e:
-				print(e)  # TODO: error handling
+				print(e)
 
 	layout_performance = sum(layout_results) / len(layout_results)
 	ocr_performance = sum(ocr_results) / len(ocr_results)
@@ -160,7 +162,6 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 		layout model: {round(layout_performance, 3)}
 		ocr model:    {round(ocr_performance, 3)}
 		ner model:    {round(ner_performance, 3)}
-		pipeline:     ?
 		
 		---------------- Comments
 		{comments}
@@ -177,7 +178,6 @@ def test_models(layout_model_name: str, ocr_model_name: str, ner_model_name: str
 				'layout_model': layout_performance,
 				'ocr_model': ocr_performance,
 				'ner_model': ner_performance,
-				'pipeline': 0,
 			},
 			'comments': comments
 		}

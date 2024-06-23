@@ -37,7 +37,6 @@ def create_metadata(
 
 
 def read_metadata(path: str, expect_entities=True) -> dict:
-	# TODO: error handling
 	with open(path, "r") as file:
 		data = json.load(file)
 

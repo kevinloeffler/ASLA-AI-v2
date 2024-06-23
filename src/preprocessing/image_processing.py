@@ -7,7 +7,8 @@ from .stamp_removal import remove_stamp
 
 def preprocess_image(image: np.ndarray) -> np.ndarray:
 	stampless_image = remove_stamp(image)
-	return preprocess_image_3(stampless_image)
+	return stampless_image
+	# return preprocess_image_3(stampless_image)
 
 
 def preprocess_image_1(image):

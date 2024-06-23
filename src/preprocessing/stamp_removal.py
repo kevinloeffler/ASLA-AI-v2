@@ -4,16 +4,17 @@ import cv2
 import numpy as np
 
 
-def remove_stamp(image: np.ndarray, stamp_path: str = 'preprocessing/asla_stamp.jpg', certainty_threshold: float = 0.32):
+def remove_stamp(image: np.ndarray, stamp_path: str = 'src/preprocessing/asla_stamp.jpg', certainty_threshold: float = 0.32):
 	if not os.path.isfile(stamp_path):
 		raise FileNotFoundError(f'Could not open stamp file at: {stamp_path}')
 
+	gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	stamp = cv2.cvtColor(cv2.imread(stamp_path), cv2.COLOR_BGR2GRAY)
 
 	margin = 10  # add a small margin to avoid black lines
 	y_margin = 60  # needed to capture the whole stamp (the last line ist cropped to increase matches)
 
-	result = cv2.matchTemplate(image, stamp, cv2.TM_CCOEFF_NORMED)
+	result = cv2.matchTemplate(gray_image, stamp, cv2.TM_CCOEFF_NORMED)
 	_, max_value, min_loc, max_loc = cv2.minMaxLoc(result)
 
 	if max_value < certainty_threshold:
@@ -27,7 +28,7 @@ def remove_stamp(image: np.ndarray, stamp_path: str = 'preprocessing/asla_stamp.
 	fill_color = __get_image_background(image, (start_x, start_y), (end_x, end_y))
 	cv2.rectangle(image, (start_x - margin, start_y - margin), (end_x + margin, end_y), color=fill_color, thickness=-1)
 
-	return image
+	return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 
 def __get_image_background(image, top_left: tuple[int, int], bottom_right: tuple[int, int], margin: int = 10) -> tuple[int, int, int]:

@@ -9,10 +9,6 @@ def run_retraining():
 
 	training_data = select_training_data('../data/retraining/', count=config.get('settings', {}).get('retraining_count', 10))
 
-	# Run retraining for each model: extract training data & retrain
-	# TODO: retrain_layout_model()
-	# TODO: retrain_ocr_model()
-
 	retrained_ner_model = train_ner_model(
 		data_dir='../data/retraining/',
 		data=training_data,
@@ -33,13 +29,10 @@ def run_retraining():
 		safe=False
 	)
 
-	# Compare score, if better -> replace
-	# TODO: if score['layout_model'] > config['models']['layout']['score']:
-	# TODO: if score['ocr_model'] > config['models']['ocr']['score']:
 
 	if score['ner_model'] > config['models']['ner']['score']:
 		update_model_config(model_type='ner', name=retrained_ner_model, score=score['ner_model'])
 
-	# Update test set
+	# Update test set?
 
 	return

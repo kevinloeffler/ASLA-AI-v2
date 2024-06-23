@@ -20,6 +20,7 @@ class LayoutModel:
 		image = cv2.cvtColor(raw_image, cv2.COLOR_BGR2RGB)
 		encoding = self.processor(image, return_tensors="pt")
 		del encoding['pixel_values']
+		print('encoding:', encoding)
 
 		# Get bounding boxes
 		image_size = (image.shape[1], image.shape[0])
@@ -30,7 +31,6 @@ class LayoutModel:
 		# self.__draw_boxes(image, ordered_boxes)
 
 		return ordered_boxes
-
 
 	def __get_bounding_boxes(self, encoding, image_size: tuple[int, int], overlap_threshold: float) -> list[list[BoundingBox]]:
 		"""Normalize, combine and group bounding boxes"""
